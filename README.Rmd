@@ -60,7 +60,7 @@ using System;
 
 class Program {
   static void Main(string[] args) {
-    Console.WriteLine("Hello World!");
+    Console.WriteLine("Hello from C# and R Markdown!");
   }
 }
 ```
@@ -72,7 +72,7 @@ open System
 
 [<EntryPoint>]
 let main argv =
-    printfn "Hello World from F#!"
+    printfn "Hello from F# and R Markdown!"
     0 // return an integer exit code
 ```
 

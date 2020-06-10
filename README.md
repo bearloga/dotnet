@@ -74,10 +74,10 @@ using System;
 
 class Program {
   static void Main(string[] args) {
-    Console.WriteLine("Hello World!");
+    Console.WriteLine("Hello from C# and R Markdown!");
   }
 }
-#> Hello World!
+#> Hello from C# and R Markdown!
 ```
 
 …and programs written in F\#, by specifying `engine.opts = list(language
@@ -88,9 +88,9 @@ open System
 
 [<EntryPoint>]
 let main argv =
-    printfn "Hello World from F#!"
+    printfn "Hello from F# and R Markdown!"
     0 // return an integer exit code
-#> Hello World from F#!
+#> Hello from F# and R Markdown!
 ```
 
 Programs with source code split across multiple chunks are supported.
