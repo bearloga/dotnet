@@ -1,0 +1,95 @@
+---
+title: "Multi-chunk programs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Multi-chunk programs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+First, register the `dotnet` knitr engine:
+
+```{r setup}
+dotnet::register_engine()
+```
+
+For single-chunk programs, new .NET app is created either in a temporary directory or in the chunk's cache (if `cache` chunk option is set to `TRUE`). For multi-chunk programs, we will need to manage the app directory ourselves and keep it consistent between the chunks.
+
+```{r app_settings}
+app_name <- "multiChunkProgram"
+app_dir <- file.path(tempdir(), app_name)
+```
+
+Also, until the app is ready to be run we will need to specify `run_app = FALSE` in each chunk's `engine.opts`:
+
+````
+`r ''````{dotnet MyClass, engine.opts = list(file = 'MyClass', name = app_name, dir = app_dir, run_app = FALSE)}
+class MyClass {
+}
+```
+````
+
+Once we're ready to define the `Main()` method, we conclude with:
+
+````
+`r ''````{dotnet Program, engine.opts = list(name = app_name, dir = app_dir)}
+class Program {
+  static void Main(string[] args) {
+    // Code to be executed
+  }
+}
+```
+````
+
+Notice the missing `file` and `run_app` in `engine.opts`. That's because `file` is "Program" and `run_app = TRUE` by default, since single-chunk programs are the default.
+
+## Example
+
+```{dotnet author, engine.opts = list(file = 'Author', name = app_name, dir = app_dir, run_app = FALSE)}
+class Author {
+  public string name;
+  public int dob; // date of birth
+  public int dod; // date of death
+  public Author(string name, int dob, int dod) {
+    this.name = name;
+    this.dob = dob;
+    this.dod = dod;
+  }
+  public int age { get { return dod - dob; } }
+}
+```
+
+```{dotnet book, engine.opts = list(file = 'Book', name = app_name, dir = app_dir, run_app = FALSE)}
+class Book {
+  public string title;
+  public int year;
+  public Author author;
+  public Book(string title, int year, Author author) {
+    this.title = title;
+    this.year = year;
+    this.author = author;
+  }
+}
+```
+
+```{dotnet program, engine.opts = list(file = 'Program', name = app_name, dir = app_dir, run_app = TRUE)}
+using System;
+
+class Program
+{
+  static void Main(string[] args)
+  {
+    Author kv = new Author("Kurt Vonnegut Jr.", 1922, 2007);
+    Book cc = new Book("Cat's Cradle", 1963, kv);
+    Console.WriteLine("'{0}' ({1}) by {2}", cc.title, cc.year, cc.author.name);
+    Console.WriteLine("{0} was {1} or so when he died in {2}", kv.name, kv.age, kv.dob);
+  }
+}
+```

@@ -1,0 +1,55 @@
+---
+title: "Inference on two coins with Infer.NET"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{matchmaking-infer-net}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This vignette demonstrates the `dotnet` knitr engine for use in R Markdown chunks that have C# and F# code. First, register the engine with knitr:
+
+```{r setup}
+dotnet::register_engine()
+```
+
+The example used comes from the [two coins tutorial](https://dotnet.github.io/infer/userguide/Two%20coins%20tutorial.html). In this example, which uses the "Microsoft.ML.Probabilistic.Compiler" NuGet package, `dotnet add package Microsoft.ML.Probabilistic.Compiler` can be accomplished by specifying it in `add_packages` inside `engine.opts` chunk option:
+
+````
+`r ''````{dotnet, engine.opts = list(add_packages = c('Microsoft.ML.Probabilistic.Compiler'))}
+using System;
+using Microsoft.ML.Probabilistic.Models;
+```
+````
+
+And here is the probabilistic program written in C#:
+
+```{dotnet csharp, engine.opts = list(add_packages = c('Microsoft.ML.Probabilistic.Compiler')), cache = TRUE}
+using System;
+using Microsoft.ML.Probabilistic.Models;
+
+class Program
+{
+  static void Main(string[] args)
+  {
+    Variable<bool> firstCoin = Variable.Bernoulli(0.5);
+    Variable<bool> secondCoin = Variable.Bernoulli(0.5);
+    Variable<bool> bothHeads = firstCoin & secondCoin;
+    
+    // Inferring distributions:
+    InferenceEngine engine = new InferenceEngine();
+    Console.WriteLine("Probability both coins are heads: " + engine.Infer(bothHeads));
+    
+    // Backwards reasoning:
+    bothHeads.ObservedValue = false;
+    Console.WriteLine("Probability distribution over firstCoin: " + engine.Infer(firstCoin));
+  }
+}
+```

@@ -1,0 +1,26 @@
+Package: dotnet
+Title: 'knitr' Engine for C# and F# Languages and Wrapper for 'dotnet' CLI
+Version: 0.1.0
+Authors@R: 
+    person(given = "Mikhail",
+           family = "Popov",
+           role = c("aut", "cre"),
+           email = "mikhail@mpopov.com",
+           comment = "@bearloga on Twitter")
+Description: Adds a 'dotnet' knitr engine for use in R Markdown with code chunks
+  written in C# and F# languages. Requires the .NET Core SDK.
+License: BSD_2_clause + file LICENSE
+SystemRequirements: dotnet (>= 3.0) - https://dotnet.microsoft.com
+URL: https://github.com/bearloga/dotnet
+BugReports: https://github.com/bearloga/dotnet/issues
+Imports: 
+    knitr,
+    R6
+Suggests: 
+    testthat,
+    rmarkdown
+Encoding: UTF-8
+LazyData: true
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
