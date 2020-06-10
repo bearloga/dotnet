@@ -94,7 +94,9 @@ let main argv =
 ```
 
 Programs with source code split across multiple chunks are supported.
-Refer to the multi-chunk programs vignette for reference.
+Refer to the [multi-chunk programs
+vignette](https://github.com/bearloga/dotnet/blob/master/vignettes/multi-chunk-program.Rmd)
+for reference.
 
 Programs with dependencies on NuGet packages can add those via
 `engine.opts`. For example:
@@ -104,8 +106,8 @@ Programs with dependencies on NuGet packages can add those via
     using Microsoft.ML.Probabilistic.Models;
     ```
 
-This is demonstrated in the “Inference on two coins with Infer.NET”
-vignette.
+This is demonstrated in the [“Inference on two coins with Infer.NET”
+vignette](https://github.com/bearloga/dotnet/blob/master/vignettes/two-coins.Rmd).
 
 Refer to `?register_engine` for more information about the `dotnet`
 knitr engine..
