@@ -22,8 +22,8 @@ dotnet::register_engine()
 
 The example used comes from the [two coins tutorial](https://dotnet.github.io/infer/userguide/Two%20coins%20tutorial.html). In this example, which uses the "Microsoft.ML.Probabilistic.Compiler" NuGet package, `dotnet add package Microsoft.ML.Probabilistic.Compiler` can be accomplished by specifying it in `add_packages` inside `engine.opts` chunk option:
 
-````
-`r ''````{dotnet, engine.opts = list(add_packages = c('Microsoft.ML.Probabilistic.Compiler'))}
+````{verbatim}
+```{dotnet, engine.opts = list(add_packages = c('Microsoft.ML.Probabilistic.Compiler'))}
 using System;
 using Microsoft.ML.Probabilistic.Models;
 ```

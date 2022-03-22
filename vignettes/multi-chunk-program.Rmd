@@ -29,8 +29,8 @@ app_dir <- file.path(tempdir(), app_name)
 
 Also, until the app is ready to be run we will need to specify `run_app = FALSE` in each chunk's `engine.opts`:
 
-````
-`r ''````{dotnet MyClass, engine.opts = list(file = 'MyClass', name = app_name, dir = app_dir, run_app = FALSE)}
+````{verbatim}
+```{dotnet MyClass, engine.opts = list(file = 'MyClass', name = app_name, dir = app_dir, run_app = FALSE)}
 class MyClass {
 }
 ```
@@ -38,8 +38,8 @@ class MyClass {
 
 Once we're ready to define the `Main()` method, we conclude with:
 
-````
-`r ''````{dotnet Program, engine.opts = list(name = app_name, dir = app_dir)}
+````{verbatim}
+```{dotnet Program, engine.opts = list(name = app_name, dir = app_dir)}
 class Program {
   static void Main(string[] args) {
     // Code to be executed

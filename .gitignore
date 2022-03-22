@@ -5,3 +5,4 @@
 inst/doc
 GeneratedSource/
 *_cache/
+tests/testthat/testthat-problems.rds

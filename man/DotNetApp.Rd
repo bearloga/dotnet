@@ -51,3 +51,13 @@ names in the \code{dotnet.packages} option. Those packages will be added
 automatically to all newly created apps.
 }
 
+\section{Debug mode}{
+
+To facilitate development, the \code{debug_mode_on} flag in \verb{$new()} can be used
+to suppress any \code{dotnet} commands from actually running. Instead, the command
+that \emph{would have} run is printed to the console for the user to run manually
+in the shell of their choice.\preformatted{debug_csharp_app <- dotnet:::DotNetApp$new(debug_mode_on = TRUE)
+debug_csharp_app$run()
+}
+}
+

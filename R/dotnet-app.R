@@ -33,6 +33,15 @@
 #' depend on the same set of packages, you can set a character vector of package
 #' names in the `dotnet.packages` option. Those packages will be added
 #' automatically to all newly created apps.
+#' @section Debug mode:
+#' To facilitate development, the `debug_mode_on` flag in `$new()` can be used
+#' to suppress any `dotnet` commands from actually running. Instead, the command
+#' that *would have* run is printed to the console for the user to run manually
+#' in the shell of their choice.
+#' ```
+#' debug_csharp_app <- dotnet:::DotNetApp$new(debug_mode_on = TRUE)
+#' debug_csharp_app$run()
+#' ```
 #' @name DotNetApp
 NULL
 
@@ -45,14 +54,16 @@ DotNetApp <- R6::R6Class(
     app_name = "",
     app_dir = "",
     pkgs = NULL,
-    files = NULL
+    files = NULL,
+    debug_mode_on = NULL
   ),
   public = list(
     initialize = function(
       app_name = "myApp",
       app_dir = file.path(tempdir(), app_name),
       language = getOption("dotnet.language"),
-      packages = getOption("dotnet.packages"))
+      packages = getOption("dotnet.packages"),
+      debug_mode_on = FALSE)
     {
       if (!language %in% c("C#", "F#")) {
         stop("language must be one of: 'C#' or 'F#'")
@@ -61,22 +72,25 @@ DotNetApp <- R6::R6Class(
       }
       proj_name <- paste0(app_name, ifelse(language == "C#", ".csproj", ".fsproj"))
       proj_path <- file.path(app_dir, proj_name)
-      if (file.exists(proj_path)) {
-        message(proj_path, " already exists")
-      } else {
-        system2(
-          "dotnet",
-          args = c(
-            "new", "console",
-            "-lang", language,
-            "-n", app_name,
-            "-o", app_dir
-          )
-        )
-      }
       # Keep internal track:
       private$app_name <- app_name
       private$app_dir <- app_dir
+      private$debug_mode_on <- debug_mode_on
+      if (file.exists(proj_path)) {
+        message(proj_path, " already exists")
+      } else {
+        sys_args <- c(
+          "new", "console",
+          "--language", language,
+          "--name", app_name,
+          "--output", app_dir
+        )
+        if (private$debug_mode_on) {
+          cat("dotnet", sys_args)
+          return(invisible(NULL))
+        }
+        system2("dotnet", args = sys_args)
+      }
       # Add packages, if any:
       if (!is.null(packages)) {
         for (pkg in packages) {
@@ -85,17 +99,19 @@ DotNetApp <- R6::R6Class(
       }
     },
     add_package = function(package_name) {
-      # Usage: dotnet add <PROJECT> package [options] <PACKAGE_NAME>
+      # Usage: dotnet [options] add [<PROJECT>] [command]
       if (package_name %in% private$packages) {
         message("Package '", package_name, "' has already been added")
         return(invisible(NULL))
       }
-      system2(
-        "dotnet",
-        args = c("add", private$app_dir, "package", package_name)
-      )
       # Keep internal track of added package:
       private$pkgs <- c(private$pkgs, package_name)
+      sys_args <- c("add", private$app_dir, "package", package_name)
+      if (private$debug_mode_on) {
+        cat("dotnet", sys_args)
+        return(invisible(NULL))
+      }
+      system2("dotnet", args = sys_args)
     },
     add_source = function(source_code, file_name = "Program") {
       file_ext <- ifelse(private$lang == "C#", ".cs", ".fs")
@@ -109,19 +125,22 @@ DotNetApp <- R6::R6Class(
       private$files <- union(private$files, file_name)
     },
     build = function(output_dir) {
-      # Usage: dotnet build [options] <PROJECT | SOLUTION>
-      system2(
-        "dotnet",
-        args = c("build", "-o", output_dir, private$app_dir)
-      )
+      # Usage: dotnet [options] build [<PROJECT | SOLUTION>...]
+      sys_args <- c("build", "--output", output_dir, private$app_dir)
+      if (private$debug_mode_on) {
+        cat("dotnet", sys_args)
+        return(invisible(NULL))
+      }
+      system2("dotnet", args = sys_args)
     },
     run = function(capture_output = TRUE) {
-      # Usage: dotnet run [options] [[--] <additional arguments>...]]
-      out <- system2(
-        "dotnet",
-        args = c("run", "-p", private$app_dir),
-        stdout = capture_output
-      )
+      # Usage: dotnet [options] run [[--] <additional arguments>...]]
+      sys_args <- c("run", "--project", private$app_dir)
+      if (private$debug_mode_on) {
+        cat("dotnet", sys_args)
+        return(invisible(NULL))
+      }
+      out <- system2("dotnet", args = sys_args, stdout = capture_output)
       if (capture_output) {
         return(out)
       } else {

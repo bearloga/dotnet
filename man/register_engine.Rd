@@ -33,9 +33,10 @@ programs.
 
 In cases where you want to split your program across multiple chunks, there
 are a few things to keep in mind. Most importantly is that because this is
-accomplished by specifying \code{engine.opts(dir = "/path/to/app")}, you will need
-to manually manage that directory. A new application will be created there
-the first time the document is knit, but will not be deleted after the fact.
+accomplished by specifying \code{engine.opts(name = "appName", dir = "/path/to/app")},
+you will need to manually manage that directory. A new application will be
+created there the first time the document is knit, but will not be deleted
+after the fact.
 
 If an application is not ready to be run, set \code{engine.opts(run_app = FALSE)}.
 }

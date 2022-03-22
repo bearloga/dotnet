@@ -6,8 +6,7 @@
 \alias{dotnet-package}
 \title{dotnet: 'knitr' Engine for C# and F# Languages and Wrapper for 'dotnet' CLI}
 \description{
-Adds a 'dotnet' knitr engine for use in R Markdown with code chunks
-  written in C# and F# languages. Requires the .NET Core SDK.
+Adds a 'dotnet' knitr engine for use in R Markdown with code chunks written in C# and F# languages. Requires the .NET Core SDK.
 }
 \seealso{
 Useful links:
